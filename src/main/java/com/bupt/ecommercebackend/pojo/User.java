@@ -1,13 +1,15 @@
 package com.bupt.ecommercebackend.pojo;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import lombok.Data;
 import java.sql.Timestamp;
+import lombok.Data;
 
 @Data
 public class User {
     private Long id;                // 用户ID（主键）
     private String name;            // 用户名
+    @JsonIgnore
+    private String password;
     private Integer type;           // 用户角色（0：消费者，1：商家，2：管理员）
     private String email;           // 邮箱
     private String phoneNumber;     // 联系方式
