@@ -1,15 +1,17 @@
 package com.bupt.ecommercebackend.Controller;
 
+import com.bupt.ecommercebackend.Service.MerchantService;
 import com.bupt.ecommercebackend.Service.UserService;
+import com.bupt.ecommercebackend.Utils.JwtUtil;
 import com.bupt.ecommercebackend.pojo.Result;
 import com.bupt.ecommercebackend.pojo.User;
 import jakarta.validation.constraints.Pattern;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.HashMap;
+import java.util.Map;
 
 @RestController
 @Validated
@@ -18,6 +20,8 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private MerchantService merchantService;
 
     //POST是浏览器给我数据
     @PostMapping("/register")
@@ -52,12 +56,20 @@ public class UserController {
 
             // 如果是商家，则必须提供 partnerId 和 appId
             if (type == 1) {
+                System.out.println("——————————————————————\n校验商家信息\n——————————————————————");
                 if (partnerId == null || partnerId.isEmpty()) {
                     return Result.error("注册商家必须提供 partnerId（商户号）");
                 }
                 if (appId == null || appId.isEmpty()) {
                     return Result.error("注册商家必须提供 appId（应用ID）");
                 }
+                System.out.println("——————————————————————\n注册商家信息\n——————————————————————");
+                userService.register(name, password, phoneNumber, type, description);
+                User user = userService.findByName(name);
+                Long id = user.getId();
+                merchantService.register(id, partnerId, appId, 0);
+                System.out.println(user);
+                return Result.success();
             }
 
             //后期添加核对验证码逻辑
@@ -65,15 +77,58 @@ public class UserController {
 //                return Result.error("验证码错误，请重试");
 //            }
 
-            //没占用就注册
-            System.out.println("——————————————————————\n注册用户\n——————————————————————");
-            System.out.println("name:" + name + "\npassword:" + password + "\nphoneNumber:" + phoneNumber +
-                    "\ntype:" + type + "\ndescription:" + description + "\npartnerId:" + partnerId + "\nappId:" + appId);
+            //普通用户注册
+            System.out.println("——————————————————————\n注册用户信息\n——————————————————————");
+//            System.out.println("name:" + name + "\npassword:" + password + "\nphoneNumber:" + phoneNumber +
+//                    "\ntype:" + type + "\ndescription:" + description + "\npartnerId:" + partnerId + "\nappId:" + appId);
             userService.register(name, password, phoneNumber, type, description);
-//            后期添加商家注册逻辑
-//            merchantService.register(partnerId, appId, status);
+            User user = userService.findByName(name);
+            System.out.println(user);
             return Result.success();
         }
+    }
+
+    @PostMapping("/login")
+    public Result login(String username,
+                        @Pattern(regexp = "^(?=(.*\\d.*){2,})(?=.*[a-z])(?=.*[A-Z])[a-zA-Z\\d]{6,}$",
+                                message = "密码格式错误，请重新输入") String password){
+        User u = userService.findByName(username);
+        if (u != null) {
+            if(password.equals(u.getPassword())){
+                Map<String, Object> claims = new HashMap<>();
+                claims.put("id", u.getId());
+                claims.put("username", u.getName());
+                String token = JwtUtil.genToken(claims);
+                return Result.success(token);
+            }
+            return Result.error("用户名或密码错误，请重新输入");
+        }
+        return Result.error("用户不存在，请重新输入");
+    }
+
+    @GetMapping("/userinfo")
+    public Result<User> userinfo( @RequestHeader(name = "Authorization") String token){
+        //从token里解析用户名
+        Map<String, Object> map = JwtUtil.parseToken(token);
+        String username = (String) map.get("username");
+        //根据用户名查询用户信息
+        User u = userService.findByName(username);
+        return Result.success(u);
+    }
+
+    @PutMapping("/update")
+    public Result update(@RequestHeader(name = "Authorization") String token, @RequestBody User user){
+
+        //从token里解析用户名
+        Map<String, Object> map = JwtUtil.parseToken(token);
+        String username = (String) map.get("username");
+        user.setName(username);
+//        user = userService.findByName(username);
+
+        System.out.println("——————————————————————\n接收到的用户信息\n——————————————————————");
+        System.out.println(user);
+        userService.update(user);
+        return Result.success();
     }
 
 }

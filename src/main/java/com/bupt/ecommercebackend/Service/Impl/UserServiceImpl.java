@@ -12,10 +12,10 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private UserMapper usermapper;//注入接口
 
-//    @Override
-//    public User findById(int id) {
-//        return usermapper.findById(id);
-//    }
+    @Override
+    public User findById(int id) {
+        return usermapper.findById(id);
+    }
 
     @Override
     public User findByName(String name) {
@@ -28,11 +28,11 @@ public class UserServiceImpl implements UserService {
     }
 
 
-//    @Override
-//    public void update(User user) {
-//        usermapper.update(user);
-//    }
-//
+    @Override
+    public void update(User user) {
+        usermapper.update(user);
+    }
+
 //    @Override
 //    public void changePsw(String newPsw, String name) {
 //        usermapper.changePsw(newPsw, name);
