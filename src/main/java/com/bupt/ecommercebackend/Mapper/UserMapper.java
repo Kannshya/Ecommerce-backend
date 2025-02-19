@@ -19,7 +19,4 @@ public interface UserMapper {
     void register(String name, String password, String phoneNumber, Integer type, String description);
 
     void update(User user);
-
-//    @Update("update user set password=#{newPsw} where name=#{name}")
-//    void changePsw(String newPsw, String name);
 }

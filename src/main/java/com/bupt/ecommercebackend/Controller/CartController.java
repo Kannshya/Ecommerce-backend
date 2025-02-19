@@ -3,6 +3,7 @@ package com.bupt.ecommercebackend.Controller;
 import com.bupt.ecommercebackend.Service.CartService;
 import com.bupt.ecommercebackend.Service.UserService;
 import com.bupt.ecommercebackend.Utils.JwtUtil;
+import com.bupt.ecommercebackend.Utils.UserContext;
 import com.bupt.ecommercebackend.pojo.Cart;
 import com.bupt.ecommercebackend.pojo.OrderItem;
 import com.bupt.ecommercebackend.pojo.Result;
@@ -27,10 +28,8 @@ public class CartController {
     public Result addProduct(@RequestHeader(name = "Authorization") String token,
                              @RequestParam("productId") Long productId,
                              @RequestParam("quantity") Integer quantity) {
-        //从token里解析用户名，从而获取用户id
-        Map<String, Object> map = JwtUtil.parseToken(token);
-        String username = (String) map.get("username");
-        User u = userService.findByName(username);
+        //从token里解析用户id
+        User u = UserContext.getUserFromToken(token);
 
         if(u.getType() != 0){
             return Result.error("只有消费者用户可以添加商品");
@@ -42,11 +41,9 @@ public class CartController {
 
     @GetMapping("/list")
     public Result listItems(@RequestHeader(name = "Authorization") String token) {
-        Map<String, Object> map = JwtUtil.parseToken(token);
-        String username = (String) map.get("username");
-        User user = userService.findByName(username);
+        User u = UserContext.getUserFromToken(token);
 
-        List<Cart> l =  cartService.listProduct(user.getId());
+        List<Cart> l =  cartService.listProduct(u.getId());
         return Result.success(l);
     }
 }

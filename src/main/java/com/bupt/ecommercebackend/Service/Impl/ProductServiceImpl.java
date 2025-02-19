@@ -1,14 +1,14 @@
 package com.bupt.ecommercebackend.Service.Impl;
 
 import com.bupt.ecommercebackend.Mapper.ProductMapper;
+import com.bupt.ecommercebackend.Utils.UserContext;
 import com.bupt.ecommercebackend.pojo.Product;
 import com.bupt.ecommercebackend.Service.ProductService;
 import com.bupt.ecommercebackend.pojo.ProductKeyword;
 import com.bupt.ecommercebackend.pojo.Result;
+import com.bupt.ecommercebackend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.math.BigDecimal;
 
 @Service
 public class ProductServiceImpl implements ProductService {
@@ -45,7 +45,13 @@ public class ProductServiceImpl implements ProductService {
     }
 
     @Override
-    public void deleteProduct(Long id){
+    public Result deleteProduct(String token, Long id){
+        User u = UserContext.getUserFromToken(token);
+        Product p = productMapper.findById(id);
+        if(p.getMerchantUserId() != u.getId()){
+            return Result.error("只有该商品所属商家有权限删除");
+        }
         productMapper.deleteProduct(id);
+        return Result.success();
     }
 }

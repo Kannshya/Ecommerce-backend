@@ -7,7 +7,7 @@ import java.time.LocalDateTime;
 @Data
 public class Product {
     private Long id;               // 商品ID
-    private Long merchantId;       // 商家ID
+    private Long merchantUserId;       // 商家ID
     private String name;           // 商品名称
     private String description;    // 商品描述
     private BigDecimal price;      // 价格

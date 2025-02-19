@@ -3,6 +3,7 @@ package com.bupt.ecommercebackend.Controller;
 import com.bupt.ecommercebackend.Service.MerchantService;
 import com.bupt.ecommercebackend.Service.UserService;
 import com.bupt.ecommercebackend.Utils.JwtUtil;
+import com.bupt.ecommercebackend.Utils.UserContext;
 import com.bupt.ecommercebackend.pojo.Result;
 import com.bupt.ecommercebackend.pojo.User;
 import jakarta.validation.constraints.Pattern;
@@ -108,22 +109,14 @@ public class UserController {
 
     @GetMapping("/userinfo")
     public Result<User> userinfo(@RequestHeader(name = "Authorization") String token){
-        //从token里解析用户名
-        Map<String, Object> map = JwtUtil.parseToken(token);
-        String username = (String) map.get("username");
-        //根据用户名查询用户信息
-        User u = userService.findByName(username);
+        User u = UserContext.getUserFromToken(token);
         return Result.success(u);
     }
 
     @PutMapping("/update")
     public Result update(@RequestHeader(name = "Authorization") String token, @RequestBody User user){
 
-        //从token里解析用户名，从而获取用户id
-        Map<String, Object> map = JwtUtil.parseToken(token);
-        String username = (String) map.get("username");
-        User u = userService.findByName(username);
-        //user是新用户信息
+        User u = UserContext.getUserFromToken(token);
         user.setId(u.getId());
 
         //新用户名不能重复

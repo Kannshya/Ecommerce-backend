@@ -3,6 +3,7 @@ package com.bupt.ecommercebackend.Controller;
 import com.bupt.ecommercebackend.Service.ProductService;
 import com.bupt.ecommercebackend.Service.UserService;
 import com.bupt.ecommercebackend.Utils.JwtUtil;
+import com.bupt.ecommercebackend.Utils.UserContext;
 import com.bupt.ecommercebackend.pojo.Merchant;
 import com.bupt.ecommercebackend.pojo.Product;
 import com.bupt.ecommercebackend.pojo.Result;
@@ -34,10 +35,7 @@ public class ProductController {
                              @RequestParam(required = false) BigDecimal discount) {
 
         //从token里解析用户名
-        Map<String, Object> map = JwtUtil.parseToken(token);
-        String username = (String) map.get("username");
-        //根据用户名查询用户信息
-        User u = userService.findByName(username);
+        User u = UserContext.getUserFromToken(token);
 
         if(u.getType() != 1){
             return Result.error("只有商家可以添加商品");
@@ -45,7 +43,7 @@ public class ProductController {
 
         // 创建一个新的 Product 对象
         Product product = new Product();
-        product.setMerchantId(u.getId());
+        product.setMerchantUserId(u.getId());
         product.setName(name);
         product.setDescription(description);
         product.setPrice(price);
@@ -66,12 +64,8 @@ public class ProductController {
     @PostMapping("/delete")
     public Result deleteProduct(@RequestHeader(name = "Authorization") String token,
                                     @RequestParam Long productId) {
-        Map<String, Object> map = JwtUtil.parseToken(token);
-        String username = (String) map.get("username");
-        User u = userService.findByName(username);
-        productService.deleteProduct(productId);
-
-        return Result.success();
+        Result r = productService.deleteProduct(token, productId);
+        return r;
     }
 
 }
