@@ -3,12 +3,15 @@ package com.bupt.ecommercebackend.Controller;
 import com.bupt.ecommercebackend.Service.CartService;
 import com.bupt.ecommercebackend.Service.UserService;
 import com.bupt.ecommercebackend.Utils.JwtUtil;
+import com.bupt.ecommercebackend.pojo.Cart;
+import com.bupt.ecommercebackend.pojo.OrderItem;
 import com.bupt.ecommercebackend.pojo.Result;
 import com.bupt.ecommercebackend.pojo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
 import java.util.Map;
 
 @RestController
@@ -35,5 +38,15 @@ public class CartController {
 
         cartService.addProduct(u.getId(), productId, quantity);
         return Result.success();
+    }
+
+    @GetMapping("/list")
+    public Result listItems(@RequestHeader(name = "Authorization") String token) {
+        Map<String, Object> map = JwtUtil.parseToken(token);
+        String username = (String) map.get("username");
+        User user = userService.findByName(username);
+
+        List<Cart> l =  cartService.listProduct(user.getId());
+        return Result.success(l);
     }
 }
