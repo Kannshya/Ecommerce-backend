@@ -63,5 +63,15 @@ public class ProductController {
         return r;
     }
 
+    @PostMapping("/delete")
+    public Result deleteProduct(@RequestHeader(name = "Authorization") String token,
+                                    @RequestParam Long productId) {
+        Map<String, Object> map = JwtUtil.parseToken(token);
+        String username = (String) map.get("username");
+        User u = userService.findByName(username);
+        productService.deleteProduct(productId);
+
+        return Result.success();
+    }
 
 }

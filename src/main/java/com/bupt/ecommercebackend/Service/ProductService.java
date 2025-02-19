@@ -8,4 +8,5 @@ import java.math.BigDecimal;
 public interface ProductService {
     Result addProduct(Product product, String keyword);
     Product findById(Long id);
+    void deleteProduct(Long id);
 }

@@ -43,4 +43,9 @@ public class ProductServiceImpl implements ProductService {
         Product p = productMapper.findById(id);
         return p;
     }
+
+    @Override
+    public void deleteProduct(Long id){
+        productMapper.deleteProduct(id);
+    }
 }

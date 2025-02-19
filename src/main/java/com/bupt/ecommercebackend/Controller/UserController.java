@@ -107,7 +107,7 @@ public class UserController {
     }
 
     @GetMapping("/userinfo")
-    public Result<User> userinfo( @RequestHeader(name = "Authorization") String token){
+    public Result<User> userinfo(@RequestHeader(name = "Authorization") String token){
         //从token里解析用户名
         Map<String, Object> map = JwtUtil.parseToken(token);
         String username = (String) map.get("username");
