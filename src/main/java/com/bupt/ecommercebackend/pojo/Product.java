@@ -17,4 +17,16 @@ public class Product {
     private Integer status;        // 状态
     private LocalDateTime createdTime;  // 创建时间
     private LocalDateTime updatedTime;  // 信息更新时间
+
+    public Product(Long merchantUserId, String name, String description,
+                   BigDecimal price, Integer stockQuantity, String category) {
+        this.merchantUserId = merchantUserId;
+        this.name = name;
+        this.description = description;
+        this.price = price;
+        this.stockQuantity = stockQuantity;
+        this.category = category;
+        this.discount = BigDecimal.ONE;  // 默认折扣为 1
+    }
+
 }

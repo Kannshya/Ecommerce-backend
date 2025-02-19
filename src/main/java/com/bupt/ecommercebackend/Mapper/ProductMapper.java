@@ -12,7 +12,7 @@ public interface ProductMapper {
     Product findById(Long id);
 
     @Insert("INSERT INTO product (merchant_user_id, name, description, price, stock_quantity, category, discount) " +
-            "VALUES (#{merchantId}, #{name}, #{description}, #{price}, #{stockQuantity}, #{category}, #{discount})")
+            "VALUES (#{merchantUserId}, #{name}, #{description}, #{price}, #{stockQuantity}, #{category}, #{discount})")
     @Options(useGeneratedKeys = true, keyProperty = "id")
     void addProduct(Product product);
 

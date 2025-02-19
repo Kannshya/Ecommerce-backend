@@ -27,9 +27,9 @@ public class ProductServiceImpl implements ProductService {
         // 创建 ProductKeyword 对象并插入
         if (keyword != null && !keyword.isEmpty()) {
             ProductKeyword pk = new ProductKeyword();
-            Product p = this.findById(product.getId());
-            System.out.println("找到的商品" + p);
-            pk.setProductId(p.getId());
+//            Product p = this.findById(product.getId());
+//            System.out.println("找到的商品" + p);
+            pk.setProductId(product.getId());
             pk.setKeyword(keyword);
 
             productMapper.insertKeyword(pk);

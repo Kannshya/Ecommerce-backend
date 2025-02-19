@@ -42,13 +42,14 @@ public class ProductController {
         }
 
         // 创建一个新的 Product 对象
-        Product product = new Product();
-        product.setMerchantUserId(u.getId());
-        product.setName(name);
-        product.setDescription(description);
-        product.setPrice(price);
-        product.setStockQuantity(stockQuantity);
-        product.setCategory(category);
+        Product product = new Product(u.getId(), name, description, price, stockQuantity, category);
+//        Product product = new Product();
+//        product.setMerchantUserId(u.getId());
+//        product.setName(name);
+//        product.setDescription(description);
+//        product.setPrice(price);
+//        product.setStockQuantity(stockQuantity);
+//        product.setCategory(category);
         if(discount != null){
             product.setDiscount(discount);
         }else{

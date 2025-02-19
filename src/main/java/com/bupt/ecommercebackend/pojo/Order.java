@@ -10,7 +10,7 @@ public class Order {
     private Long userId;           // 订单所属用户（消费者）
     private Long merchantId;       // 商家ID
     private BigDecimal totalAmount; // 订单总金额
-    private String userAddress;    // 收货地址
+    private String userAddressId;    // 收货地址
     private String paymentMethod;  // 支付方式
     private String trackingNumber; // 运单号
     private Integer status;        // 订单状态
