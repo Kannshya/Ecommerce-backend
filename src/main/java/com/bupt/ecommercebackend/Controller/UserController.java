@@ -119,11 +119,18 @@ public class UserController {
     @PutMapping("/update")
     public Result update(@RequestHeader(name = "Authorization") String token, @RequestBody User user){
 
-        //从token里解析用户名
+        //从token里解析用户名，从而获取用户id
         Map<String, Object> map = JwtUtil.parseToken(token);
         String username = (String) map.get("username");
-        user.setName(username);
-//        user = userService.findByName(username);
+        User u = userService.findByName(username);
+        //user是新用户信息
+        user.setId(u.getId());
+
+        //新用户名不能重复
+        User b = userService.findByName(user.getName());
+        if (b != null) {
+            return Result.error("用户名已存在或与之前相同，请重新输入");
+        }
 
         System.out.println("——————————————————————\n接收到的用户信息\n——————————————————————");
         System.out.println(user);

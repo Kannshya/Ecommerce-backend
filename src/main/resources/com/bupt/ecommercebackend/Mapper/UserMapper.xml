@@ -19,6 +19,6 @@
                 description = #{description},
             </if>
         </set>
-        WHERE name = #{name}
+        WHERE id = #{id}
     </update>
 </mapper>
