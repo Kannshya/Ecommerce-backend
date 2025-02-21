@@ -8,7 +8,7 @@ public class AfterSales {
     private Long id;               // 售后申请ID
     private Long orderId;          // 关联订单ID
     private Long userId;           // 消费者ID
-    private Long merchantId;       // 商家ID
+    private Long merchantUserId;       // 商家的用户ID
     private String requestType;    // 售后申请类型
     private String reason;         // 申请原因
     private Integer status;        // 售后状态
